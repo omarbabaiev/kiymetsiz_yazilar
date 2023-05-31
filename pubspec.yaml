@@ -44,8 +44,8 @@ dev_dependencies:
   card_swiper: ^2.0.4
   flutter_animate: ^4.1.1+1
   get_storage: any
-  url_launcher: ^6.1.11
-
+  share_plus: any
+  share_files_and_screenshot_widgets: ^1.0.6
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

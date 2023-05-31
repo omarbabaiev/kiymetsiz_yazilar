@@ -74,7 +74,16 @@ class _TopicsState extends State<Topics> {
                 return Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Container(
-                    child: Center(child: Text(topics[index], textAlign: TextAlign.center, style: GoogleFonts.aldrich(fontWeight: FontWeight.bold),)),
+                    child: Center(child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(topics[index], textAlign: TextAlign.center, style: GoogleFonts.aldrich(fontWeight: FontWeight.bold),),
+                        LinearProgressIndicator(
+                          minHeight: 15,
+                          value: .3,
+                        )
+                      ],
+                    )),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       border: Border.all(width: 2, color: Colors.deepPurple)

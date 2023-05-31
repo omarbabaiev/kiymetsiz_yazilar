@@ -2,7 +2,7 @@
 
 List<String>topics =
 [   "Tümünü seç",
-  "A, E, İ, Ü(Birinci Kısım)",
+  "A, E, İ, Ü",
   "B",
   "T",
   "B",

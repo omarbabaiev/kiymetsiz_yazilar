@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -9,11 +9,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:voca_voca/screens/background.dart';
 import 'package:voca_voca/screens/favorite_list.dart';
 import 'package:voca_voca/screens/topics.dart';
-import 'package:url_launcher_windows/url_launcher_windows.dart';
 import '../book/topics.dart';
-
+import 'package:share_plus/share_plus.dart';
+import 'package:share_files_and_screenshot_widgets/share_files_and_screenshot_widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   
@@ -23,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var bookContent = ky1+kyB;
+
 
   // void  _generateMembersMain() {
   //   return list1.shuffle();
@@ -43,15 +45,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-@override
+  @override
   void initState() {
-  favoriteList = box.read("list");
+  favoriteList = box.read("list")??["dsd", "Dsds"] ;
     // _generateMembersMain();
     // TODO: implement initState
     super.initState();
   }
 
 
+  GlobalKey previewContainer = new GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -65,120 +68,156 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
           child:
               Scaffold(
+                drawer: Drawer(),
                   backgroundColor: Colors.transparent,
                   extendBodyBehindAppBar: true,
                   appBar: AppBar(
+                    iconTheme: IconThemeData(color: Colors.deepPurple),
                   centerTitle: true,
                   title: Text("Kıymetsiz yazılar", style: GoogleFonts.aldrich(fontSize: 20 , fontWeight: FontWeight.bold )),
                   scrolledUnderElevation: 0,
                   shadowColor: Colors.transparent,
                   elevation: 0,
                   backgroundColor: Colors.transparent,
-                  leading: IconButton(onPressed: () {  }, icon: Icon(Icons.interests, color: Colors.deepPurple),),
                   actions: [
-                    IconButton(onPressed: ()async{
-                      setState(() {
-                       box.read("list").contains(wordInSwiper) ? removeFromList(wordInSwiper) : addToList(wordInSwiper);
-                      });
-
-                      // // await _showModalSheet();
-
-                      //
-                      // box.read("list").contains(box.read("1"))
-                      //     ? SnackBar(
-                      //   duration: Duration(seconds: 1),
-                      //   showCloseIcon: true,
-                      //   content: Text("Listeden çıkartıldı", style: GoogleFonts.aldrich(color: Colors.deepPurple),),
-                      //   behavior: SnackBarBehavior.floating,
-                      //   backgroundColor: Colors.deepPurple.shade100,
-                      //   shape: StadiumBorder(),
-                      //
-                      // ) :  ScaffoldMessenger.of(context).showSnackBar(
-                      //     SnackBar(
-                      //       duration: Duration(seconds: 1),
-                      //       showCloseIcon: true,
-                      //       content: Text("Listeye eklendi", style: GoogleFonts.aldrich(color: Colors.deepPurple),),
-                      //       behavior: SnackBarBehavior.floating,
-                      //       backgroundColor: Colors.deepPurple.shade100,
-                      //       shape: StadiumBorder(),
-                      //
-                      //     ));
-                      // print(box.read("list"));
-
-                    }, icon:  Icon(
-                       box.read("list").contains(wordInSwiper) ??false ?  Icons.favorite :
-                      Icons.favorite_border, color: Colors.deepPurple,)),
-
-
-                    IconButton(onPressed: (){
-                    }, icon: Icon(Icons.share, color: Colors.deepPurple,))
-                  ],
-                  ),
-
+                    IconButton(onPressed: (){}, icon: Icon(Icons.interests, color: Colors.deepPurple))
+                  //   IconButton(onPressed:() {
+                  //
+                  //     //   await ShareFilesAndScreenshotWidgets().shareScreenshot(
+                  //     //       previewContainer,
+                  //     //       1000,
+                  //     //       "Title",
+                  //     //       "${wordInSwiper.substring(0, 10)}.png",
+                  //     //       "image/png",
+                  //     //       text: "This is the caption!");
+                  //     //
+                  //     // await Share.share(wordInSwiper);
+                  //   }, icon: Icon(Icons.share, color: Colors.deepPurple,))
+                  ]),
 
                 body: Animate(
                   effects: [FadeEffect(), ScaleEffect()],
-                  child: SizedBox(
-                      child: Swiper(
-                        onIndexChanged: (index){
-                          setState(() {
-                            wordInSwiper = bookContent[index];
-                            // box.write("1", list1[index]);
-                          });
-                        },
-                        itemCount: bookContent.length,
-                        scrollDirection: Axis.vertical,
-                        itemBuilder: (BuildContext context, int index) {
-                          return  Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                height: double.infinity,
-                                color: Colors.transparent,
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 30),
-                                        child: GestureDetector(
-                                          onLongPress: (){
-                                            Clipboard.setData(ClipboardData(text: bookContent[index]))
-                                                  .then((value) { //only if ->
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                    SnackBar(
-                                                      duration: Duration(seconds: 1),
-                                                      showCloseIcon: true,
-                                                      content: Text("Metin kopyalandı", style: GoogleFonts.aldrich(color: Colors.deepPurple),),
-                                                      behavior: SnackBarBehavior.floating,
-                                                      backgroundColor: Colors.deepPurple.shade100,
-                                                      shape: StadiumBorder(),
+                  child: RepaintBoundary(
+                    key: previewContainer,
+                    child: SizedBox(
+                        child: Swiper(
+                          onIndexChanged: (index){
+                            setState(() {
+                              wordInSwiper = bookContent[index];
+                              // box.write("1", list1[index]);
+                            });
+                          },
+                          itemCount: bookContent.length,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: (BuildContext context, int index) {
+                            return  Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  color: Colors.transparent,
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 30),
+                                      child: GestureDetector(
+                                        onLongPress: (){
+                                          Clipboard.setData(ClipboardData(text: bookContent[index]))
+                                                .then((value) { //only if ->
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                    duration: Duration(seconds: 1),
+                                                    showCloseIcon: true,
+                                                    content: Text("Metin kopyalandı", style: GoogleFonts.aldrich(color: Colors.deepPurple),),
+                                                    behavior: SnackBarBehavior.floating,
+                                                    backgroundColor: Colors.deepPurple.shade100,
+                                                    shape: StadiumBorder(),
 
-                                                    ));
-                                              });
-                                          },
-                                            child: Text(bookContent[index],textAlign: TextAlign.center, style: GoogleFonts.aldrich(fontSize: 20 , ),)),
-                                      ),
+                                                  ));
+                                            });
+                                        },
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(bookContent[index],textAlign: TextAlign.center, style: GoogleFonts.aldrich(fontSize: 20 , ),),
+                                              SizedBox(height: 20,),
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 80.0),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    IconButton.filledTonal(onPressed: (){
+                                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>BackgroundScreen(bookContent[index])));
+                                                    }, icon: Icon(Icons.ios_share, color: Colors.deepPurple)),
+                                                    IconButton.filledTonal(onPressed: (){
+                                                      Clipboard.setData(ClipboardData(text: bookContent[index]))
+                                                          .then((value) { //only if ->
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              duration: Duration(seconds: 1),
+                                                              showCloseIcon: true,
+                                                              content: Text("Metin kopyalandı", style: GoogleFonts.aldrich(color: Colors.deepPurple),),
+                                                              behavior: SnackBarBehavior.floating,
+                                                              backgroundColor: Colors.deepPurple.shade100,
+                                                              shape: StadiumBorder(),
 
-                                    ],
+                                                            ));
+                                                      });
+                                                    }, icon: Icon(Icons.copy, color: Colors.deepPurple)),
+                                                    IconButton.filledTonal(onPressed: ()async{
+                                                    setState(() {
+                                                    box.read("list").contains(wordInSwiper) ? removeFromList(wordInSwiper) : addToList(wordInSwiper);
+                                                    });
+
+                                                    // // await _showModalSheet();
+
+                                                    //
+                                                    // box.read("list").contains(box.read("1"))
+                                                    //     ? SnackBar(
+                                                    //   duration: Duration(seconds: 1),
+                                                    //   showCloseIcon: true,
+                                                    //   content: Text("Listeden çıkartıldı", style: GoogleFonts.aldrich(color: Colors.deepPurple),),
+                                                    //   behavior: SnackBarBehavior.floating,
+                                                    //   backgroundColor: Colors.deepPurple.shade100,
+                                                    //   shape: StadiumBorder(),
+                                                    //
+                                                    // ) :  ScaffoldMessenger.of(context).showSnackBar(
+                                                    //     SnackBar(
+                                                    //       duration: Duration(seconds: 1),
+                                                    //       showCloseIcon: true,
+                                                    //       content: Text("Listeye eklendi", style: GoogleFonts.aldrich(color: Colors.deepPurple),),
+                                                    //       behavior: SnackBarBehavior.floating,
+                                                    //       backgroundColor: Colors.deepPurple.shade100,
+                                                    //       shape: StadiumBorder(),
+                                                    //
+                                                    //     ));
+                                                    // print(box.read("list"));
+
+                                                    }, icon:  Icon(
+                                                      box.read("list").contains(wordInSwiper) ?  Icons.favorite :
+                                                      Icons.favorite_border, color: Colors.deepPurple,),),
+
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          )),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                      )),
+
+                              ],
+                            );
+                          },
+                        )),
+                  ),
                 ),
 
 
-                floatingActionButton: Padding(
-                  padding: const EdgeInsets.only(left: 30),
-                  child: FloatingActionButton(onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Topics()));
+                floatingActionButton: FloatingActionButton(onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Topics()));
 
-                  }, child: Icon(Icons.menu_book),),
-                ),
+                }, child: Icon(Icons.menu_book),),
               )
 
 
@@ -236,4 +275,5 @@ class _HomeScreenState extends State<HomeScreen> {
         }
     );
   }
+
 }
