@@ -10,6 +10,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../book/topics.dart';
+import 'background.dart';
 
 
 class Favorite extends StatefulWidget {
@@ -19,7 +20,7 @@ class Favorite extends StatefulWidget {
 }
 
 class _FavoriteState extends State<Favorite> {
-  var bookContent = ky1+kyB;
+
   List favoriteList = [];
   var item = 0;
   GetStorage box = GetStorage();
@@ -60,41 +61,12 @@ class _FavoriteState extends State<Favorite> {
             extendBodyBehindAppBar: true,
             appBar: AppBar(
               centerTitle: true,
-              title: Text("Sonra okunacaklar", style: GoogleFonts.aldrich(fontSize: 20 , fontWeight: FontWeight.bold )),
+              title: Text("Sonra okunacaklar", style: GoogleFonts.poppins(fontSize: 20 , fontWeight: FontWeight.bold )),
               scrolledUnderElevation: 0,
               shadowColor: Colors.transparent,
               elevation: 0,
               backgroundColor: Colors.transparent,
               actions: [
-                IconButton(onPressed: (){
-                  // await _showModalSheet();
-                  setState(() {
-                    removeFromList(item);
-                  });
-
-                  // box.read("list").contains(box.read("1") ?? false)
-                  //     ? SnackBar(
-                  //   duration: Duration(seconds: 1),
-                  //   showCloseIcon: true,
-                  //   content: Text("Listeden çıkartıldı", style: GoogleFonts.aldrich(color: Colors.deepPurple),),
-                  //   behavior: SnackBarBehavior.floating,
-                  //   backgroundColor: Colors.deepPurple.shade100,
-                  //   shape: StadiumBorder(),
-                  //
-                  // ) :  ScaffoldMessenger.of(context).showSnackBar(
-                  //     SnackBar(
-                  //       duration: Duration(seconds: 1),
-                  //       showCloseIcon: true,
-                  //       content: Text("Listeye eklendi", style: GoogleFonts.aldrich(color: Colors.deepPurple),),
-                  //       behavior: SnackBarBehavior.floating,
-                  //       backgroundColor: Colors.deepPurple.shade100,
-                  //       shape: StadiumBorder(),
-                  //
-                  //     ));
-
-                }, icon:   box.read("list").isEmpty ? SizedBox() :  Icon(Icons.favorite , color: Colors.deepPurple,)),
-
-
                 IconButton(onPressed: (){
                 }, icon: Icon(Icons.share, color: Colors.deepPurple,))
               ],
@@ -105,7 +77,7 @@ class _FavoriteState extends State<Favorite> {
               effects: [FadeEffect(), ScaleEffect()],
               child: SizedBox(
                   child:
-                  favoriteList.length == 0 ? Center(child: Text("İçerik bulunamadı", style: GoogleFonts.aldrich(fontSize: 30, color: Colors.deepPurple),),)
+                  favoriteList.length == 0 ? Center(child: Text("İçerik bulunamadı", style: GoogleFonts.poppins(fontSize: 30, color: Colors.deepPurple),),)
                       : Swiper(
                     loop: true,
                     onIndexChanged: (index){
@@ -137,7 +109,7 @@ class _FavoriteState extends State<Favorite> {
                                                 SnackBar(
                                                   duration: Duration(seconds: 1),
                                                   showCloseIcon: true,
-                                                  content: Text("Metin kopyalandı", style: GoogleFonts.aldrich(color: Colors.deepPurple),),
+                                                  content: Text("Metin kopyalandı", style: GoogleFonts.poppins(color: Colors.deepPurple),),
                                                   behavior: SnackBarBehavior.floating,
                                                   backgroundColor: Colors.deepPurple.shade100,
                                                   shape: StadiumBorder(),
@@ -145,14 +117,48 @@ class _FavoriteState extends State<Favorite> {
                                                 ));
                                           });
                                         },
-                                        child: Text(box.read("list")[index],textAlign: TextAlign.center, style: GoogleFonts.aldrich(fontSize: 20 , ),)),
+                                        child: Text(box.read("list")[index],textAlign: TextAlign.center, style: GoogleFonts.poppins(fontSize: 20 , ),)),
                                   ),
+    SizedBox(height: 20,),
+    Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 80.0),
+    child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+    IconButton.filledTonal(onPressed: (){
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>BackgroundScreen(box.read("list")[index])));
+    }, icon: Icon(Icons.ios_share, color: Colors.deepPurple)),
+    IconButton.filledTonal(onPressed: (){
+    Clipboard.setData(ClipboardData(text: box.read("list")[index]))
+        .then((value) { //only if ->
+    ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+    duration: Duration(seconds: 1),
+    showCloseIcon: true,
+    content: Text("Metin kopyalandı", style: GoogleFonts.poppins(color: Colors.deepPurple),),
+    behavior: SnackBarBehavior.floating,
+    backgroundColor: Colors.deepPurple.shade100,
+    shape: StadiumBorder(),
 
-                                ],
+    ));
+    });
+    }, icon: Icon(Icons.copy, color: Colors.deepPurple)),
+
+    IconButton.filledTonal(
+    icon:  Icon(
+    Icons.favorite, color: Colors.deepPurple,),
+    onPressed: (){
+      setState(() {
+        setState(() {
+          removeFromList(item);
+        });
+        // box.read("list").contains(wordInSwiper) ? removeFromList(wordInSwiper) : addToList(wordInSwiper);
+      });
+    })],
                               ),
                             ),
-                          ),
-                        ],
+                          ]),
+                      ))],
                       );
                     },
                   )),

@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:voca_voca/screens/home_screen.dart';
 
 import '../book/topics.dart';
 
@@ -43,9 +44,7 @@ class _TopicsState extends State<Topics> {
       child: Container(
           decoration: BoxDecoration(
             color: Colors.deepPurple.shade100,
-            // image: DecorationImage(image: AssetImage("assets/back2.jpg"),
-            //   fit: BoxFit.cover,
-            //   colorFilter: ColorFilter.mode(Colors.deepPurpleAccent, BlendMode.overlay))
+
           ),
           child:
           Scaffold(
@@ -53,7 +52,7 @@ class _TopicsState extends State<Topics> {
             extendBodyBehindAppBar: true,
             appBar: AppBar(
               centerTitle: true,
-              title: Text("Başlıklar", style: GoogleFonts.aldrich(fontSize: 20 , fontWeight: FontWeight.bold )),
+              title: Text("Başlıklar", style: GoogleFonts.poppins(fontSize: 20 , fontWeight: FontWeight.bold )),
               scrolledUnderElevation: 0,
               shadowColor: Colors.transparent,
               elevation: 0,
@@ -73,20 +72,24 @@ class _TopicsState extends State<Topics> {
                   itemBuilder: (context, index){
                 return Padding(
                   padding: const EdgeInsets.all(4.0),
-                  child: Container(
-                    child: Center(child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(topics[index], textAlign: TextAlign.center, style: GoogleFonts.aldrich(fontWeight: FontWeight.bold),),
-                        LinearProgressIndicator(
-                          minHeight: 15,
-                          value: .3,
-                        )
-                      ],
-                    )),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(width: 2, color: Colors.deepPurple)
+                  child: InkWell(
+                    onTap: ()async{
+                      await box.write("allOfBook", kiymetsizYazilar[index]);
+                      await box.write("topic", topics[index]);
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen(box.read("allOfBook"))));
+                    },
+                    child: Container(
+                      child: Center(child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(topics[index], textAlign: TextAlign.center, style: GoogleFonts.poppins(fontWeight: FontWeight.bold),),
+
+                        ],
+                      )),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(width: 2, color: Colors.deepPurple)
+                      ),
                     ),
                   ),
                 );

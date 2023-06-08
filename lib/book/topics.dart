@@ -1,10 +1,7 @@
 
 
 List<String>topics =
-[   "Tümünü seç",
-  "A, E, İ, Ü",
-  "B",
-  "T",
+["A, E, İ, Ü",
   "B",
   "T",
   "P",
@@ -17,6 +14,7 @@ List<String>topics =
   "Z",
   "S",
   "Ş",
+  "S",
   "T",
   "Z",
   "A, İ, U, O, Ö",
@@ -30,7 +28,7 @@ List<String>topics =
   "H",
   "L",
   "Y",
-  "A, E, İ, Ü(İkinci Kısım)",
+  "A, E, İ, Ü(2)",
   "B",
   "P",
   "T",
@@ -57,7 +55,6 @@ List<String>topics =
   "H",
   "L",
   "Y",
-  "İkinci kısım (Ek)",
 
 
 
