@@ -61,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   effects: [FadeEffect(duration: Duration(seconds: 1)), ],
                   child: Text(
                     'Kıymeti bulunamayan yazılar',
-                    style: GoogleFonts.arimaMadurai(fontSize: 20, fontWeight: FontWeight.bold)
+                    style: GoogleFonts.aldrich(fontSize: 20, fontWeight: FontWeight.bold)
                   ),
                 ),
               ],
