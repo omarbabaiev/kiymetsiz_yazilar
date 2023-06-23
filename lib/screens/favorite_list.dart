@@ -19,7 +19,6 @@ class Favorite extends StatefulWidget {
 }
 
 class _FavoriteState extends State<Favorite> {
-  var bookContent = ky1+kyB;
   List favoriteList = [];
   var item = 0;
   GetStorage box = GetStorage();
