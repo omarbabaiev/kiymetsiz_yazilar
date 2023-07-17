@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/rendering.dart';
@@ -91,7 +92,7 @@ Future<ImageModel>_fetchData()async{
                                      padding: const EdgeInsets.all(4.0),
                                      child: InkWell(
                                          onTap: (){
-                                           Navigator.of(context).push(MaterialPageRoute(builder: (context)=>
+                                           Navigator.of(context).push(CupertinoPageRoute(builder: (context)=>
                                                EditImage( snapshot.data!.hits[index].largeImageUrl, widget.text, "${index}", snapshot.data!.hits[index].imageHeight.toDouble(), snapshot.data!, snapshot.data!.hits[index].imageSize, index)));
                                          },
                                          child: Hero(tag: "${index}",

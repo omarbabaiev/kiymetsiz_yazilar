@@ -76,7 +76,12 @@ class _TopicsState extends State<Topics> {
                     onTap: ()async{
                       await box.write("allOfBook", kiymetsizYazilar[index]);
                       await box.write("topic", topics[index]);
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen(box.read("allOfBook"))));
+                      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen(box.read("allOfBook"))));
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                              builder: (context) => HomeScreen(box.read("allOfBook"))),
+                              (route) => false
+                      );
                     },
                     child: Container(
                       child: Center(child: Column(

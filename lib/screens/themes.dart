@@ -50,13 +50,13 @@ class _SelectThemeState extends State<SelectTheme> {
               shadowColor: Colors.transparent,
               elevation: 0,
               backgroundColor: Colors.transparent,
-              actions: [
-               selectedItem == null ? SizedBox() :
-               Animate(effects: [FadeEffect(), ScaleEffect()],
-               child: TextButton(onPressed: (){
-                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen( box.read("allOfBook")?? kiymetsizYazilar[0])));
-               }, child: Text("Seç", style: GoogleFonts.poppins(fontSize: 20 , fontWeight: FontWeight.bold, ))))
-              ],
+              // actions: [
+              //  selectedItem == null ? SizedBox() :
+              //  Animate(effects: [FadeEffect(), ScaleEffect()],
+              //  child: TextButton(onPressed: (){
+              //    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen( box.read("allOfBook")?? kiymetsizYazilar[0])));
+              //  }, child: Text("Seç", style: GoogleFonts.poppins(fontSize: 20 , fontWeight: FontWeight.bold, ))))
+              // ],
             ),
 
 
@@ -72,6 +72,13 @@ class _SelectThemeState extends State<SelectTheme> {
                           setState(() {
                             box.write("theme", index);
                             selectedItem = index;
+                            // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomeScreen( box.read("allOfBook")?? kiymetsizYazilar[0])));
+                            Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen( box.read("allOfBook")?? kiymetsizYazilar[0])),
+                                    (route) => false
+                            );
+
 
                           });
                         },
